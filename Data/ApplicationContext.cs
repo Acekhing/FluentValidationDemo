@@ -29,17 +29,38 @@ namespace FluentValidationDemo.Data
                     v => JsonConvert.SerializeObject(v),
                     v => JsonConvert.DeserializeObject<List<string>>(v));
 
-            modelBuilder.Entity<Order>()
-                .Property(p => p.AddOns)
-                .HasConversion(
-                    v => JsonConvert.SerializeObject(v),
-                    v => JsonConvert.DeserializeObject<List<string>>(v));
+            /* modelBuilder.Entity<Customer>()
+                 .Property(p => p.PhoneNumbers)
+                 .HasConversion(
+                     v => JsonConvert.SerializeObject(v),
+                     v => JsonConvert.DeserializeObject<List<string>>(v));
 
-            modelBuilder.Entity<Food>()
-                .Property(p => p.AddOns)
-                .HasConversion(
-                    v => JsonConvert.SerializeObject(v),
-                    v => JsonConvert.DeserializeObject<List<string>>(v));
+             modelBuilder.Entity<Order>()
+                 .Property(p => p.AddOns)
+                 .HasConversion(
+                     v => JsonConvert.SerializeObject(v),
+                     v => JsonConvert.DeserializeObject<List<string>>(v));
+
+             modelBuilder.Entity<Food>()
+                 .Property(p => p.AddOns)
+                 .HasConversion(
+                     v => JsonConvert.SerializeObject(v),
+                     v => JsonConvert.DeserializeObject<List<string>>(v));*/
+        }
+
+        public async Task<List<Customer>> GetCustomers()
+        {
+            return await Customers.ToListAsync();
+        }
+
+        private async Task<List<Food>> GetFoods()
+        {
+            return await Foods.ToListAsync();
+        }
+
+        private async Task<List<Order>> GetOrders()
+        {
+            return await Orders.ToListAsync();
         }
     }
 }

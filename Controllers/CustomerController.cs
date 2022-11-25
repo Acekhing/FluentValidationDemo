@@ -1,10 +1,8 @@
 ﻿using AutoMapper;
-using FluentValidationDemo.Data;
 using FluentValidationDemo.DTO;
-using FluentValidationDemo.Models;
-using FluentValidationDemo.validators;
+using FluentValidationDemo.InterfaceRepositories;
+using FluentValidationDemo.Response;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace FluentValidationDemo.Controllers
 {
@@ -12,95 +10,74 @@ namespace FluentValidationDemo.Controllers
     [Route("api/[controller]")]
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status202Accepted)]
-    public class CustomerController: ControllerBase
+    public class CustomerController : ControllerBase
     {
 
-        private readonly IMapper _mapper;
-        private readonly ApplicationContext dbContext;
+        private readonly ICustomerRepository repository;
 
-        public CustomerController(IMapper mapper, ApplicationContext applicationContext)
+        public CustomerController(ICustomerRepository repository)
         {
-            _mapper = mapper;
-            this.dbContext = applicationContext;
+            this.repository = repository;
         }
 
         [HttpPost, ActionName("CreateCustomer")]
         [Route("")]
-        public async Task<ActionResult> Create([FromBody] CustomerDto payload)
+        public async Task<ActionResult> Create([FromBody] CustomerCreateDto payload)
         {
-            // Validate payload
+            if (!ModelState.IsValid) return BadRequest(ModelState);
 
-            if (!ModelState.IsValid)
+            var response = await repository.Create(payload);
+
+            if (response is FailureResponse)
             {
-                return BadRequest(ModelState);
+                var validationResult = ((FailureResponse)response).GetData();
+                foreach (var error in validationResult.Errors)
+                {
+                    ModelState.AddModelError(error.PropertyName, error.ErrorMessage);
+                }
+                return ValidationProblem(ModelState);
             }
+            var Id = ((SuccessReponse)response).GetData();
 
-            // Map payload to entity
-            var customerEntity = _mapper.Map<Customer>(payload);
+            return CreatedAtAction("GetCustomer", new { customerId = Id }, Id);
+        }
 
-           // TODO: validate Entity
+        [HttpPut, ActionName("UpdateCustomer")]
+        [Route("")]
+        public async Task<ActionResult> Update([FromBody] CustomerUpdateDto payload)
+        {
+            if (!ModelState.IsValid) return BadRequest(ModelState);
 
+            var existingCustomer = await repository.Get(payload.CustomerId);
 
-            // TODO: Add customer to the database
-            var result = await dbContext.AddAsync<Customer>(customerEntity);
+            if (existingCustomer == null) return NotFound();
 
-            return Accepted(result);
+            await repository.Update(payload);
+
+            return Accepted();
         }
 
         [HttpGet(), ActionName("GetCustomer")]
         [Route("{customerId}")]
         public async Task<ActionResult> Get([FromRoute] Guid customerId)
         {
-            if(!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
+            if (!ModelState.IsValid) return BadRequest(ModelState);
 
-            var result = await dbContext.Customers.FindAsync(customerId);
+            var result = await repository.Get(customerId);
 
-            if(result == null)
-            {
-                return NotFound();
-            }
+            if (result == null) return NotFound();
+
             return Ok(result);
-        }
-
-        [HttpPut, ActionName("UpdateCustomer")]
-        [Route("{customerId}")]
-        public async Task<ActionResult> Update([FromRoute] Guid customerId, [FromBody] CustomerDto payload)
-        {
-            // Validate payload
-
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            var existingCustomer = await dbContext.Customers.FindAsync(customerId);
-
-            if(existingCustomer == null)
-            {
-                return NotFound();
-            }
-
-            var customerEntity = _mapper.Map<Customer>(payload);
-            //dbContext.Update<Customer>(payload);
-            await dbContext.SaveChangesAsync();
-
-            return NoContent();
         }
 
         [HttpGet, ActionName("GetAllCustomers")]
         [Route("")]
         public async Task<ActionResult> GetAll()
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
+            if (!ModelState.IsValid) return BadRequest(ModelState);
 
-            var result = await dbContext.Customers.ToListAsync();
-            
+            var result = await repository.GetAll();
+
             return Ok(result);
         }
 
@@ -108,20 +85,13 @@ namespace FluentValidationDemo.Controllers
         [Route("{customerId}")]
         public async Task<ActionResult> Delete([FromRoute] Guid customerId)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
+            if (!ModelState.IsValid) return BadRequest(ModelState);
 
-            var result = await dbContext.Customers.FindAsync(customerId);
+            var result = await repository.Get(customerId);
 
-            if(result == null)
-            {
-                return NotFound(customerId);
-            }
+            if (result == null) return NotFound(customerId);
 
-            dbContext.Remove(result);
-            await dbContext.SaveChangesAsync();
+            await repository.Delete(customerId);
 
             return NoContent();
         }

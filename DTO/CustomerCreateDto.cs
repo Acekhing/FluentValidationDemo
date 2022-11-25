@@ -1,19 +1,15 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
+﻿using FluentValidationDemo.Models;
 using System.ComponentModel.DataAnnotations;
 
-namespace FluentValidationDemo.Models
+namespace FluentValidationDemo.DTO
 {
-    public class Customer
+    public class CustomerCreateDto
     {
-        [Required]
-        public Guid CustomerId { get; set; } = Guid.NewGuid();
         [Required]
         public string FirstName { get; set; }
         [Required]
         public string LastName { get; set; }
         public string Address { get; set; }
         public List<string> PhoneNumbers { get; set; }
-        public int Score { get; set; } = 0;
     }
 }

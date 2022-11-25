@@ -1,15 +1,13 @@
-﻿using FluentValidationDemo.Models;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace FluentValidationDemo.DTO
 {
-    public class CustomerDto
+    public class CustomerUpdateDto
     {
         [Required]
+        public Guid CustomerId { get; set; }
         public string FirstName { get; set; }
-        [Required]
         public string LastName { get; set; }
         public string Address { get; set; }
-        public List<string> PhoneNumbers { get; set; }
     }
 }

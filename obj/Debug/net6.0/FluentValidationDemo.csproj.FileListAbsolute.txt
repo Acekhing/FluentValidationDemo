@@ -55,3 +55,8 @@ C:\Users\Dennis\source\repos\FluentValidationDemo\bin\Debug\net6.0\System.Text.E
 C:\Users\Dennis\source\repos\FluentValidationDemo\bin\Debug\net6.0\System.Text.Json.dll
 C:\Users\Dennis\source\repos\FluentValidationDemo\bin\Debug\net6.0\runtimes\browser\lib\net6.0\System.Text.Encodings.Web.dll
 C:\Users\Dennis\source\repos\FluentValidationDemo\bin\Debug\net6.0\Newtonsoft.Json.dll
+C:\Users\Dennis\source\repos\FluentValidationDemo\bin\Debug\net6.0\Microsoft.AspNetCore.JsonPatch.dll
+C:\Users\Dennis\source\repos\FluentValidationDemo\bin\Debug\net6.0\Microsoft.AspNetCore.Mvc.NewtonsoftJson.dll
+C:\Users\Dennis\source\repos\FluentValidationDemo\bin\Debug\net6.0\Newtonsoft.Json.Bson.dll
+C:\Users\Dennis\source\repos\FluentValidationDemo\bin\Debug\net6.0\FluentValidation.AspNetCore.dll
+C:\Users\Dennis\source\repos\FluentValidationDemo\bin\Debug\net6.0\FluentValidation.DependencyInjectionExtensions.dll

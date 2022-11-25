@@ -3,10 +3,9 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace FluentValidationDemo.Models
 {
-    [Keyless]
-    [NotMapped]
     public class AddOn
     {
+        public int Id { get; set; } = new Random().Next();
         public string Name { get; set; }
     }
 }

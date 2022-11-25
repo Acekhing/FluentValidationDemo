@@ -7,9 +7,17 @@ namespace FluentValidationDemo.validators
     {
         public Customervalidator()
         {
-            RuleFor(x => x.LastName).NotEmpty().Length(3, 20).WithMessage("Lastname must not be empty and between 3 - 20 characters");
-            RuleFor(x => x.FirstName).NotEmpty().Length(3,20).WithMessage("Firstname must not be empty and between 3 - 20 characters");
-          
+
+            
+            RuleFor(x => x.LastName)
+                .NotEmpty()
+                .WithMessage("Lastname cannot be empty")
+                .Length(3, 20).WithMessage("Lastname must be between 3 - 20 characters");
+            RuleFor(x => x.FirstName)
+                .NotEmpty()
+                .WithMessage("Firtname cannot be empty")
+                .Length(3,20)
+                .WithMessage("Firstname must be between 3 - 20 characters");
 
         }
 
